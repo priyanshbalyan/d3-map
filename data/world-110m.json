@@ -280,7 +280,8 @@
           ],
           "id": "840",
           "properties": {
-            "name": "United States of America"
+            "name": "United States of America",
+            "alternateName": "USA"
           }
         },
         {
@@ -490,7 +491,8 @@
           ],
           "id": "180",
           "properties": {
-            "name": "Dem. Rep. Congo"
+            "name": "Dem. Rep. Congo",
+            "alternateName": "Congo"
           }
         },
         {
@@ -1741,7 +1743,8 @@
           ],
           "id": "784",
           "properties": {
-            "name": "United Arab Emirates"
+            "name": "United Arab Emirates",
+            "alternateName": "UAE"
           }
         },
         {
@@ -2769,7 +2772,8 @@
           ],
           "id": "826",
           "properties": {
-            "name": "United Kingdom"
+            "name": "United Kingdom",
+            "alternateName": "UK"
           }
         },
         {
