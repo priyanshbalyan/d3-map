@@ -11,6 +11,7 @@ import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
 import * as versor from 'versor'
 import * as scrapeIt from 'scrape-it'
+import * as _ from 'lodash'
 import world110m from '~/data/world-110m.json'
 
 export default {
@@ -38,7 +39,7 @@ export default {
         countries: {
           listItem: 'tr',
           data: {
-            country: 'td > a.mt_a',
+            country: 'td:nth-child(1)',
             totalCases: 'td:nth-child(2)',
             newCases: 'td:nth-child(3)',
             totalDeaths: 'td:nth-child(4)',
@@ -47,7 +48,7 @@ export default {
         }
       }
       const { data } = await scrapeIt('https://cors-anywhere.herokuapp.com/https://www.worldometers.info/coronavirus/', options)
-      this.countryData = data.countries
+      this.countryData = _.groupBy(_.filter(data.countries, 'country'), 'country')
     },
     generateMap () {
       this.context = document.getElementById('canvas').getContext('2d')
@@ -67,7 +68,7 @@ export default {
           .on('drag.render', () => this.render(land, borders, countries))
           .on('end.render', () => this.render(land, borders, countries)))
         .call(() => this.render(land, borders, countries))
-        .on('mousemove', () => this.mousemove(this.context.canvas, countries, land, borders))
+        .on('mousemove', () => this.mousemove(countries, land, borders))
         .node()
 
       d3.select('body').append('div')
@@ -76,13 +77,13 @@ export default {
         .attr('style', 'position: absolute; opacity: 0;')
     },
 
-    mousemove (canvas, countries, land, borders) {
+    mousemove (countries, land, borders) {
+      const canvas = this.context.canvas
       const country = this.getCountry(d3.mouse(canvas), countries)
       if (country) {
         this.render(land, borders, country)
-        this.country = country.properties.name
-        const found = this.countryData.find(x => x.country === country.properties.name)
-        this.renderTooltip(found)
+        this.country = country
+        this.renderTooltip()
       } else {
         this.country = null
         d3.select('#tooltip')
@@ -90,13 +91,15 @@ export default {
       }
     },
 
-    renderTooltip (found) {
+    renderTooltip () {
+      const props = this.country.properties
+      const found = _.first(_.get(this.countryData, props.name) || _.get(this.countryData, props.alternateName))
       if (found) {
         d3.select('#tooltip')
           .style('left', (d3.event.pageX + 10) + 'px')
           .style('top', (d3.event.pageY + 10) + 'px')
           .style('opacity', 1)
-          .html(`<strong>${this.country}</strong>
+          .html(`<strong>${props.name}</strong>
             <br>Total Cases: ${found.totalCases || 'N/A'}
             <br>New Cases: ${found.newCases || 'N/A'}
             <br>Total Deaths: ${found.totalDeaths || 'N/A'}
@@ -106,15 +109,15 @@ export default {
           .style('left', (d3.event.pageX + 10) + 'px')
           .style('top', (d3.event.pageY + 10) + 'px')
           .style('opacity', 1)
-          .html(`<strong>${this.country}</strong>`)
+          .html(`<strong>${props.name}</strong>`)
       }
     },
 
     getCountry (coords, countries) {
       const pos = this.projection.invert(coords)
-      return countries.find((f) => {
-        return f.geometry.coordinates.find((c1) => {
-          return this.polygonContains(c1, pos) || c1.find((c2) => {
+      return _.find(countries, (f) => {
+        return _.find(f.geometry.coordinates, (c1) => {
+          return this.polygonContains(c1, pos) || _.find(c1, (c2) => {
             return this.polygonContains(c2, pos)
           })
         })
