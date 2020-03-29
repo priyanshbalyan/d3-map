@@ -1,0 +1,31 @@
+{
+  "name": "d3-app",
+  "version": "1.0.0",
+  "description": "My impeccable Nuxt.js project",
+  "author": "Priyansh Balyan",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/dotenv": "^1.4.0",
+    "d3": "^5.15.0",
+    "nuxt": "^2.0.0",
+    "scrape-it": "^5.2.3",
+    "topojson-client": "^3.1.0",
+    "versor": "^0.1.2"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^2.0.0",
+    "@nuxtjs/eslint-module": "^1.0.0",
+    "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^6.1.0",
+    "eslint-plugin-nuxt": ">=0.4.2"
+  }
+}
