@@ -219,4 +219,32 @@ export default {
 #tooltip > strong {
   font-size: 14px;
 }
+
+canvas{
+  width: 304px;
+}
+
+@media (min-width: 480px) {
+  canvas{
+    width: 480px;
+  }
+}
+
+@media (min-width: 768px) {
+  canvas{
+    width: 640px;
+  }
+}
+
+@media (min-width: 992px) {
+  canvas{
+    width: 720px;
+  }
+}
+
+@media (min-width: 1200px) {
+  canvas{
+    width: 800px;
+  }
+}
 </style>
