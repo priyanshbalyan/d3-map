@@ -3,6 +3,13 @@
     <div>
       <canvas id="canvas" :width="width" :height="height" />
     </div>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        :size="50"
+        :width="5"
+        indeterminate
+      />
+    </v-overlay>
   </div>
 </template>
 
@@ -26,12 +33,14 @@ export default {
       path: null,
       sphere: { type: 'Sphere' },
       country: null,
-      countryData: []
+      countryData: [],
+      overlay: true
     }
   },
   async mounted () {
     this.generateMap()
     await this.loadData()
+    this.overlay = false
   },
   methods: {
     async loadData () {
