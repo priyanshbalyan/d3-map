@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/541c6e0a-af4d-4a07-aa62-9ca0772ded81/deploy-status)](https://app.netlify.com/sites/covid-d3/deploys)
+
 # d3-app
 
 > My impeccable Nuxt.js project
