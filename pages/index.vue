@@ -1,8 +1,11 @@
 <template>
-  <div class="container">
-    <div>
-      <canvas id="canvas" :width="width" :height="height" />
-    </div>
+  <v-container
+    class="fill-height"
+    pa-0
+    ma-0
+    fluid
+  >
+    <canvas id="canvas" :width="width" :height="height" />
     <v-overlay :value="overlay">
       <v-progress-circular
         :size="50"
@@ -10,7 +13,7 @@
         indeterminate
       />
     </v-overlay>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -38,13 +41,13 @@ export default {
     }
   },
   async mounted () {
-    window.addEventListener('resize', this.onResize)
+    window.addEventListener('resize', this.generateMap)
     this.generateMap()
     await this.loadData()
     this.overlay = false
   },
   beforeDestroy () {
-    window.removeEventListener('resize', this.onResize)
+    window.removeEventListener('resize', this.generateMap)
   },
   methods: {
     async loadData () {
@@ -62,9 +65,6 @@ export default {
       }
       const { data } = await scrapeIt('https://cors-anywhere.herokuapp.com/https://www.worldometers.info/coronavirus/', options)
       this.countryData = _.groupBy(_.filter(data.countries, 'country'), 'country')
-    },
-    onResize (event) {
-      this.generateMap()
     },
     generateMap () {
       this.width = document.getElementById('canvas').offsetWidth
@@ -226,6 +226,7 @@ export default {
 .container {
   margin: 0 auto;
   min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
