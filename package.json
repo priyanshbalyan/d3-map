@@ -15,13 +15,13 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
-    "@nuxtjs/vuetify": "^2.2.19",
     "d3": "^5.15.0",
     "lodash": "^4.17.15",
     "nuxt": "^2.0.0",
     "scrape-it": "^5.2.3",
     "topojson-client": "^3.1.0",
-    "versor": "^0.1.2"
+    "versor": "^0.1.2",
+    "vuetify": "^2.2.20"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^2.0.0",

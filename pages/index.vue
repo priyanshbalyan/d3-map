@@ -38,9 +38,13 @@ export default {
     }
   },
   async mounted () {
+    window.addEventListener('resize', this.onResize)
     this.generateMap()
     await this.loadData()
     this.overlay = false
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.onResize)
   },
   methods: {
     async loadData () {
@@ -59,7 +63,11 @@ export default {
       const { data } = await scrapeIt('https://cors-anywhere.herokuapp.com/https://www.worldometers.info/coronavirus/', options)
       this.countryData = _.groupBy(_.filter(data.countries, 'country'), 'country')
     },
+    onResize (event) {
+      this.generateMap()
+    },
     generateMap () {
+      this.width = document.getElementById('canvas').offsetWidth
       this.context = document.getElementById('canvas').getContext('2d')
       this.path = d3.geoPath(this.projection, this.context)
 
@@ -108,11 +116,7 @@ export default {
           .style('left', (d3.event.pageX + 10) + 'px')
           .style('top', (d3.event.pageY + 10) + 'px')
           .style('opacity', 1)
-          .html(`<strong>${props.name}</strong>
-            <br>Total Cases: ${found.totalCases || 'N/A'}
-            <br>New Cases: ${found.newCases || 'N/A'}
-            <br>Total Deaths: ${found.totalDeaths || 'N/A'}
-            <br>New Deaths: <span style="color:#f00">${found.newDeaths || 'N/A'}</span>`)
+          .html(this.renderTable(props, found))
       } else if (this.country) {
         d3.select('#tooltip')
           .style('left', (d3.event.pageX + 10) + 'px')
@@ -120,6 +124,18 @@ export default {
           .style('opacity', 1)
           .html(`<strong>${props.name}</strong>`)
       }
+    },
+
+    renderTable (props, country) {
+      return `
+        <strong>${props.name}</strong>
+        <table>
+          <tr><td>Total Cases</td><td>${country.totalCases || 'N/A'}</td></tr>
+          <tr><td>New Cases</td><td>${country.newCases || 'N/A'}</td></tr>
+          <tr><td>Total Deaths</td><td>${country.totalDeaths || 'N/A'}</td></tr>
+          <tr><td>New Deaths</td><td><span style="color:#f00">${country.newDeaths || 'N/A'}</span></td></tr>
+        </table>
+      `
     },
 
     getCountry (coords, countries) {
