@@ -5,11 +5,11 @@
     ma-0
     fluid
   >
-    <div class="display-1 font-weight-light" :style="`text-align:right;position:absolute;top:10px;left:${offset}px;`">
-      Total Cases: {{ _.get(generalInfo, 'totalCases', 'N/A') }}<br>
-      Deaths: {{ _.get(generalInfo, 'deaths', 'N/A') }}<br>
-      Recovered: {{ _.get(generalInfo, 'totalCases', 'N/A') }}<br>
-    </div>
+    <info
+      v-if="!overlay"
+      :general-info="generalInfo"
+      :offset="offset"
+    />
     <tooltip
       :country="country"
       :offset-x="tooltipOffsetX"
@@ -35,6 +35,8 @@ import * as scrapeIt from 'scrape-it'
 import * as _ from 'lodash'
 import world110m from '~/data/world-110m.json'
 import Tooltip from '~/components/tooltip'
+import Info from '~/components/info'
+
 const water = { type: 'Sphere' }
 const projection = d3.geoOrthographic().precision(0.1)
 
@@ -48,7 +50,8 @@ const degPerMs = degPerSec / 1000
 
 export default {
   components: {
-    Tooltip
+    Tooltip,
+    Info
   },
   data () {
     return {
@@ -60,6 +63,7 @@ export default {
       sphere: { type: 'Sphere' },
       country: null,
       countryData: [],
+      choroplethData: [],
       generalInfo: {},
       overlay: true,
       autorotate: null,
@@ -76,7 +80,8 @@ export default {
       tooltipOffsetX: 0,
       tooltipOffsetY: 0,
       opacity: 0,
-      offset: null
+      offset: null,
+      color: null
     }
   },
   computed: {
@@ -85,10 +90,9 @@ export default {
     }
   },
   async mounted () {
+    await this.loadData()
     this.generateMap()
     this.offset = document.documentElement.clientWidth - this.height
-    console.log(this.offset)
-    await this.loadData()
     this.overlay = false
   },
   beforeDestroy () {
@@ -114,6 +118,7 @@ export default {
       const { data } = await scrapeIt('https://cors-anywhere.herokuapp.com/https://www.worldometers.info/coronavirus/', options)
       this.countryData = _.groupBy(_.filter(data.countries, 'country'), 'country')
       this.generalInfo = _.pick(data, ['totalCases', 'deaths', 'recovered'])
+      this.choroplethData = data.countries
     },
 
     generateMap () {
@@ -123,6 +128,7 @@ export default {
       this.path = d3.geoPath(projection).context(this.context)
 
       this.setAngles()
+      // d3.legend({ color: this.color, title: 'Legend' })
 
       this.canvas
         .call(d3.drag()
@@ -136,9 +142,29 @@ export default {
       this.countries = topojson.feature(world110m, world110m.objects.countries).features
       this.land = topojson.feature(world110m, world110m.objects.land)
 
+      this.loadChoropleth()
+
       window.addEventListener('resize', this.scale)
       this.scale()
       this.autorotate = d3.timer(this.rotate)
+    },
+
+    loadChoropleth () {
+      this.choroplethData = new Map(_.map(_.filter(this.choroplethData, 'country'), (item) => {
+        return [item.country, _.toNumber(_.replace(item.totalCases, /,/g, ''))]
+      }))
+
+      _.each(this.countries, (country) => {
+        const props = country.properties
+        if (!this.choroplethData.get(props.name)) {
+          const value = this.choroplethData.get(props.alternateName)
+          this.choroplethData.set(props.name, value)
+        }
+      })
+      this.color = d3.scaleSequential()
+        .domain(d3.extent(Array.from(this.choroplethData.values())))
+        .interpolator(d3.interpolateRdGy)
+        .unknown('#ccc')
     },
 
     enter (country) {
@@ -211,10 +237,20 @@ export default {
       this.fill(this.land, colorLand)
       this.stroke(this.borders, colorWater, 0.5)
       this.stroke(water, colorLand, 1.5)
+      this.renderChoroplethData()
       if (this.currentCountry) {
         this.fill(this.currentCountry, colorWater)
         this.stroke(this.currentCountry, '#f00', 1)
       }
+    },
+
+    renderChoroplethData () {
+      const color = this.color
+      _.each(this.countries, (country) => {
+        const name = country.properties.name
+        const colorVal = color(this.choroplethData.get(name))
+        this.fill(country, colorVal)
+      })
     },
 
     fill (obj, color) {
