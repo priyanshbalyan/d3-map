@@ -21,7 +21,7 @@
     "scrape-it": "^5.2.3",
     "topojson-client": "^3.1.0",
     "versor": "^0.1.2",
-    "vuetify": "^2.2.20"
+    "vuetify": "^2.2.21"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^2.0.0",
