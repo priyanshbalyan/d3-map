@@ -5,6 +5,16 @@
     ma-0
     fluid
   >
+    <div class="infobox">
+      <info
+        v-if="!overlay"
+        :general-info="generalInfo"
+        :offset="10"
+        :color-func="color"
+        :rotation-toggle="rotationToggle"
+        @toggle="rotationToggle = !rotationToggle"
+      />
+    </div>
     <tooltip
       :country="country"
       :offset-x="tooltipOffsetX"
@@ -19,20 +29,6 @@
         indeterminate
       />
     </v-overlay>
-    <v-container fluid style="position:absolute; top: 10px;">
-      <info
-        v-if="!overlay"
-        :general-info="generalInfo"
-        :offset="10"
-        :color-func="color"
-      />
-      <v-switch
-        v-if="!overlay"
-        v-model="rotationToggle"
-        color="red"
-        :label="`Rotation ${rotationToggle ? 'On' : 'Off'}`"
-      />
-    </v-container>
   </v-container>
 </template>
 <script>
@@ -204,7 +200,9 @@ export default {
     leave (country) {
       this.current.text('')
       this.opacity = 0
-      this.startRotation(3000)
+      if (this.rotationToggle) {
+        this.startRotation(3000)
+      }
     },
 
     setAngles () {
@@ -370,5 +368,10 @@ export default {
 }
 .v-list-item {
   min-height: 32px;
+}
+.infobox {
+  position:absolute;
+  top: 10px;
+  left: 10px;
 }
 </style>

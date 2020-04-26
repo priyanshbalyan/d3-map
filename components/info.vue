@@ -4,6 +4,12 @@
     Total Cases: {{ _.get(generalInfo, 'totalCases', 'N/A') }}<br>
     Deaths: {{ _.get(generalInfo, 'deaths', 'N/A') }}<br>
     Recovered: {{ _.get(generalInfo, 'totalCases', 'N/A') }}<br>
+    <v-switch
+      color="red"
+      style="z-index:2"
+      :label="`Rotation ${!rotationToggle ? 'On' : 'Off'}`"
+      @change="$emit('toggle')"
+    />
   </div>
 </template>
 <script>
@@ -24,6 +30,10 @@ export default {
     colorFunc: {
       type: Function,
       default: null
+    },
+    rotationToggle: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
