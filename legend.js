@@ -128,11 +128,11 @@ export default function legend ({
 }
 
 function ramp (color, n = 256) {
-  const canvas = d3.select('#ramp').node()
+  const canvas = d3.create('canvas').node()
   const context = canvas.getContext('2d')
   for (let i = 0; i < n; ++i) {
     context.fillStyle = color(i / (n - 1))
-    context.fillRect(i, 0, 1, 1)
+    context.fillRect(i, 0, 5, 200)
   }
   return canvas
 }

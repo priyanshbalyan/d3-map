@@ -5,11 +5,6 @@
     ma-0
     fluid
   >
-    <info
-      v-if="!overlay"
-      :general-info="generalInfo"
-      :offset="offset"
-    />
     <tooltip
       :country="country"
       :offset-x="tooltipOffsetX"
@@ -24,9 +19,22 @@
         indeterminate
       />
     </v-overlay>
+    <v-container fluid style="position:absolute; top: 10px;">
+      <info
+        v-if="!overlay"
+        :general-info="generalInfo"
+        :offset="10"
+        :color-func="color"
+      />
+      <v-switch
+        v-if="!overlay"
+        v-model="rotationToggle"
+        color="red"
+        :label="`Rotation ${rotationToggle ? 'On' : 'Off'}`"
+      />
+    </v-container>
   </v-container>
 </template>
-
 <script>
 import * as d3 from 'd3'
 import * as topojson from 'topojson-client'
@@ -81,12 +89,22 @@ export default {
       tooltipOffsetY: 0,
       opacity: 0,
       offset: null,
-      color: null
+      color: null,
+      rotationToggle: true
     }
   },
   computed: {
     _ () {
       return _
+    }
+  },
+  watch: {
+    rotationToggle (value) {
+      if (value) {
+        this.startRotation()
+      } else {
+        this.stopRotation()
+      }
     }
   },
   async mounted () {
@@ -120,7 +138,9 @@ export default {
       this.generalInfo = _.pick(data, ['totalCases', 'deaths', 'recovered'])
       this.choroplethData = data.countries
     },
-
+    someFunc () {
+      this.rotationToggle = !this.rotationToggle
+    },
     generateMap () {
       this.current = d3.select('#current')
       this.canvas = d3.select('#canvas')
@@ -128,7 +148,8 @@ export default {
       this.path = d3.geoPath(projection).context(this.context)
 
       this.setAngles()
-      // d3.legend({ color: this.color, title: 'Legend' })
+
+      window.d3 = d3
 
       this.canvas
         .call(d3.drag()
@@ -233,9 +254,9 @@ export default {
 
     render () {
       this.context.clearRect(0, 0, this.width, this.height)
-      this.fill(water, colorWater)
-      this.fill(this.land, colorLand)
-      this.stroke(this.borders, colorWater, 0.5)
+      // this.fill(water, colorWater)
+      // this.fill(this.land, colorLand)
+      // this.stroke(this.borders, colorWater, 0.5)
       this.stroke(water, colorLand, 1.5)
       this.renderChoroplethData()
       if (this.currentCountry) {
@@ -331,7 +352,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>

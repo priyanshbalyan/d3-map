@@ -20,10 +20,10 @@
     "nuxt": "^2.0.0",
     "scrape-it": "^5.2.3",
     "topojson-client": "^3.1.0",
-    "versor": "^0.1.2",
-    "vuetify": "^2.2.21"
+    "versor": "^0.1.2"
   },
   "devDependencies": {
+    "@nuxtjs/vuetify": "^1.0.0",
     "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
