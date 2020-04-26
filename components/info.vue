@@ -5,9 +5,10 @@
     Deaths: {{ _.get(generalInfo, 'deaths', 'N/A') }}<br>
     Recovered: {{ _.get(generalInfo, 'totalCases', 'N/A') }}<br>
     <v-switch
+      v-model="rotationToggle"
       color="red"
       style="z-index:2"
-      :label="`Rotation ${!rotationToggle ? 'On' : 'Off'}`"
+      :label="`Rotation ${rotationToggle ? 'On' : 'Off'}`"
       @change="$emit('toggle')"
     />
   </div>
