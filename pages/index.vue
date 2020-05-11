@@ -374,4 +374,16 @@ export default {
   top: 10px;
   left: 10px;
 }
+
+@media screen and (max-width: 420px) {
+  #canvas {
+    margin-top: 4rem;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  #canvas {
+    margin-top: 6rem;
+  }
+}
 </style>
