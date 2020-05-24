@@ -116,13 +116,13 @@ export default {
     async loadData () {
       const options = {
         countries: {
-          listItem: 'tr',
+          listItem: '#main_table_countries_today > tbody > tr',
           data: {
-            country: 'td:nth-child(1)',
-            totalCases: 'td:nth-child(2)',
-            newCases: 'td:nth-child(3)',
-            totalDeaths: 'td:nth-child(4)',
-            newDeaths: 'td:nth-child(5)'
+            country: 'td:nth-child(2) > a',
+            totalCases: 'td:nth-child(3)',
+            newCases: 'td:nth-child(4)',
+            totalDeaths: 'td:nth-child(5)',
+            newDeaths: 'td:nth-child(6)'
           }
         },
         totalCases: '.maincounter-number > span[style="color:#aaa"]',
