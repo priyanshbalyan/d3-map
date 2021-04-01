@@ -129,7 +129,7 @@ export default {
         deaths: '.maincounter-number:not([style]) > span:not([style])',
         recovered: '.maincounter-number[style="color:#8ACA2B "] > span'
       }
-      const { data } = await scrapeIt('https://cors-anywhere.herokuapp.com/https://www.worldometers.info/coronavirus/', options)
+      const { data } = await scrapeIt('https://thingproxy.freeboard.io/fetch/https://www.worldometers.info/coronavirus/', options)
       this.countryData = _.groupBy(_.filter(data.countries, 'country'), 'country')
       this.generalInfo = _.pick(data, ['totalCases', 'deaths', 'recovered'])
       this.choroplethData = data.countries
